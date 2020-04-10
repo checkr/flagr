@@ -1,0 +1,58 @@
+package notify
+
+import (
+	"bytes"
+	"encoding/json"
+
+	"github.com/checkr/flagr/pkg/config"
+	"github.com/checkr/flagr/pkg/entity"
+	"github.com/checkr/flagr/pkg/mapper/entity_restapi/e2r"
+	"github.com/checkr/flagr/swagger_gen/models"
+)
+
+// Webhook is a generic webhook that sends the flag and the event details alongside each other
+type Webhook struct {
+	client *Client
+}
+
+// NewWebhook returns a new Webhook
+func NewWebhook(c *Client) *Webhook {
+	return &Webhook{
+		client: c,
+	}
+}
+
+// WebhookMessage defines the JSON object send to webhook endpoints.
+type WebhookMessage struct {
+	Action  itemAction   `json:"action"`
+	Type    itemType     `json:"type"`
+	Data    *models.Flag `json:"data"`
+	Version string       `json:"version"`
+}
+
+// Notify implements the Notifier interface for webhooks
+func (w *Webhook) Notify(f *entity.Flag, b itemAction, i itemType) error {
+	model, err := e2r.MapFlag(f)
+	if err != nil {
+		return err
+	}
+
+	msg := &WebhookMessage{
+		Action:  b,
+		Type:    i,
+		Version: "1",
+		Data:    model,
+	}
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(msg); err != nil {
+		return err
+	}
+
+	_, err = w.client.Post(config.Config.WebhookURL, bytes.NewReader(buf.Bytes()))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
