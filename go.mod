@@ -5,6 +5,7 @@ go 1.15
 require (
 	cloud.google.com/go v0.37.4
 	github.com/DataDog/datadog-go v0.0.0-20180330214955-e67964b4021a
+	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/Shopify/sarama v1.19.0
 	github.com/a8m/kinesis-producer v0.0.0-20180723062609-03228a9f79b3
 	github.com/auth0/go-jwt-middleware v0.0.0-20170425171159-5493cabe49f7
@@ -14,11 +15,13 @@ require (
 	github.com/bsm/ratelimit v2.0.0+incompatible
 	github.com/caarlos0/env v3.3.0+incompatible
 	github.com/certifi/gocertifi v0.0.0-20180118203423-deb3ae2ef261 // indirect
+	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
 	github.com/codegangsta/negroni v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1
 	github.com/dchest/uniuri v0.0.0-20160212164326-8902c56451e9
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/evalphobia/logrus_sentry v0.4.6
+	github.com/fatih/structs v1.1.0
 	github.com/getsentry/raven-go v0.0.0-20180903072508-084a9de9eb03
 	github.com/go-openapi/errors v0.19.9
 	github.com/go-openapi/loads v0.20.1
@@ -32,6 +35,7 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jpillora/backoff v0.0.0-20170918002102-8eab2debe79d // indirect
+	github.com/matryer/resync v0.0.0-20161211202428-d39c09a11215
 	github.com/meatballhat/negroni-logrus v0.0.0-20170801195057-31067281800f
 	github.com/newrelic/go-agent v2.1.0+incompatible
 	github.com/onsi/ginkgo v1.8.0 // indirect

@@ -208,7 +208,7 @@ func (c *crud) PutFlag(params flag.PutFlagParams) middleware.Responder {
 	f := &entity.Flag{}
 	tx := getDB()
 
-	if err := tx.First(f, params.FlagID).Error; err != nil {
+	if err := entity.PreloadSegmentsVariantsTags(tx).First(f, params.FlagID).Error; err != nil {
 		return flag.NewPutFlagDefault(404).WithPayload(ErrorMessage("%s", err))
 	}
 
@@ -237,6 +237,10 @@ func (c *crud) PutFlag(params flag.PutFlagParams) middleware.Responder {
 		f.Notes = *params.Body.Notes
 	}
 
+	if err := validateFlagIfEnabled(f); err != nil {
+		return err
+	}
+
 	if err := tx.Save(f).Error; err != nil {
 		return flag.NewPutFlagDefault(500).WithPayload(ErrorMessage("%s", err))
 	}
@@ -258,11 +262,15 @@ func (c *crud) PutFlag(params flag.PutFlagParams) middleware.Responder {
 
 func (c *crud) SetFlagEnabledState(params flag.SetFlagEnabledParams) middleware.Responder {
 	f := &entity.Flag{}
-	if err := getDB().First(f, params.FlagID).Error; err != nil {
+	if err := entity.PreloadSegmentsVariantsTags(getDB()).First(f, params.FlagID).Error; err != nil {
 		return flag.NewSetFlagEnabledDefault(404).WithPayload(ErrorMessage("%s", err))
 	}
 
 	f.Enabled = *params.Body.Enabled
+
+	if err := validateFlagIfEnabled(f); err != nil {
+		return err
+	}
 
 	if err := getDB().Save(f).Error; err != nil {
 		return flag.NewSetFlagEnabledDefault(500).WithPayload(ErrorMessage("%s", err))
